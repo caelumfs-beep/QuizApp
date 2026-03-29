@@ -1,5 +1,5 @@
 name: trad_reviewer
-description: "Trad Reviewer - Gamified Quiz App"
+description: "TRAD CFS - Offline Exam Reviewer"
 publish_to: 'none'
 version: 1.0.0+1
 
@@ -12,11 +12,19 @@ dependencies:
   cupertino_icons: ^1.0.8
   provider: ^6.1.2
   shared_preferences: ^2.3.2
+  google_fonts: ^8.0.2
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^6.0.0
+  flutter_launcher_icons: ^0.14.4
+
+flutter_launcher_icons:
+  android: true
+  ios: false
+  image_path: "assets/images/apk_logo.png"
+  min_sdk_android: 21
 
 flutter:
   uses-material-design: true

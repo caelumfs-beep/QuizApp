@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/app_provider.dart';
 import '../data/questions_data.dart';
-import '../widgets/app_theme.dart';
-import '../widgets/star_rating.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class LevelSelectScreen extends StatelessWidget {
   const LevelSelectScreen({super.key});
@@ -12,7 +11,24 @@ class LevelSelectScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final provider = context.watch<AppProvider>();
     return Scaffold(
-      appBar: AppBar(title: const Text('Select Level')),
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        leading: GestureDetector(
+          onTap: () => Navigator.pop(context),
+          child: const Icon(Icons.arrow_back_ios_rounded, color: Color(0xFF003266)),
+        ),
+        title: Text(
+          'Select Level',
+          style: GoogleFonts.nunito(
+            fontSize: 20,
+            fontWeight: FontWeight.w900,
+            color: const Color(0xFF003266),
+          ),
+        ),
+        centerTitle: true,
+      ),
       body: GridView.builder(
         padding: const EdgeInsets.all(20),
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -30,8 +46,8 @@ class LevelSelectScreen extends StatelessWidget {
           return _LevelCard(
             level: level,
             unlocked: unlocked,
-            score: score,
             stars: stars,
+            completed: score != null,
             onTap: unlocked
                 ? () {
                     provider.startLevel(level);
@@ -48,55 +64,76 @@ class LevelSelectScreen extends StatelessWidget {
 class _LevelCard extends StatelessWidget {
   final int level;
   final bool unlocked;
-  final int? score;
   final int stars;
+  final bool completed;
   final VoidCallback? onTap;
 
-  const _LevelCard({required this.level, required this.unlocked, this.score, required this.stars, this.onTap});
+  const _LevelCard({
+    required this.level,
+    required this.unlocked,
+    required this.stars,
+    required this.completed,
+    this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final completed = score != null;
     return GestureDetector(
       onTap: onTap,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
+      child: Container(
         decoration: BoxDecoration(
-          color: unlocked ? (completed ? AppTheme.primary : AppTheme.surface) : AppTheme.locked,
+          color: Colors.white,
           borderRadius: BorderRadius.circular(16),
-          boxShadow: unlocked
-              ? [BoxShadow(color: AppTheme.primary.withValues(alpha: 0.2), blurRadius: 8, offset: const Offset(0, 4))]
-              : [],
           border: Border.all(
-            color: unlocked ? (completed ? AppTheme.primary : AppTheme.primaryLight) : AppTheme.locked,
-            width: 2,
+            color: unlocked ? const Color(0xFF003266).withOpacity(0.2) : const Color(0xFFE0E0E0),
+            width: 1.5,
           ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 8,
+              offset: const Offset(0, 3),
+            ),
+          ],
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              unlocked ? (completed ? Icons.check_circle_rounded : Icons.play_circle_outline_rounded) : Icons.lock_rounded,
-              color: unlocked ? (completed ? Colors.white : AppTheme.primary) : Colors.white,
-              size: 32,
-            ),
-            const SizedBox(height: 6),
+            if (!unlocked)
+              Image.asset('assets/images/lock.png', height: 36)
+            else
+              Text(
+                '$level',
+                style: GoogleFonts.nunito(
+                  fontSize: 28,
+                  fontWeight: FontWeight.w900,
+                  color: const Color(0xFF003266),
+                ),
+              ),
+            const SizedBox(height: 8),
             Text(
               'Level $level',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 14,
-                color: unlocked ? (completed ? Colors.white : AppTheme.textDark) : Colors.white,
+              style: GoogleFonts.nunito(
+                fontSize: 13,
+                fontWeight: FontWeight.w800,
+                color: unlocked ? const Color(0xFF003266) : Colors.grey,
               ),
             ),
-            if (completed) ...[
-              const SizedBox(height: 4),
-              Text('$score/${getQuestionsForLevel(level).length}',
-                  style: const TextStyle(color: Colors.white70, fontSize: 12)),
-              const SizedBox(height: 4),
-              StarRating(stars: stars, size: 14),
-            ] else if (unlocked)
-              const Text('Tap to play', style: TextStyle(color: AppTheme.textMuted, fontSize: 11)),
+            const SizedBox(height: 6),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: List.generate(3, (i) {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 1),
+                  child: Image.asset(
+                    (completed && i < stars)
+                        ? 'assets/images/gold star.png'
+                        : 'assets/images/blank star.png',
+                    height: 14,
+                  ),
+                );
+              }),
+            ),
           ],
         ),
       ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class SplashScreen extends StatelessWidget {
   const SplashScreen({super.key});
@@ -6,78 +7,68 @@ class SplashScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFEEF1F5),
+      backgroundColor: const Color(0xFF003266),
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 32),
-          child: Column(
-            children: [
-              const Spacer(),
-              // Glow + Logo
-              Container(
-                width: 260,
-                height: 220,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  boxShadow: [
-                    BoxShadow(
-                      color: const Color(0xFFE8C84A).withOpacity(0.4),
-                      blurRadius: 80,
-                      spreadRadius: 30,
-                    ),
-                  ],
-                ),
-                child: Center(
-                  child: Image.asset(
-                    'assets/images/cfb.png',
-                    width: 240,
-                    fit: BoxFit.contain,
-                  ),
-                ),
+        child: Column(
+          children: [
+            const SizedBox(height: 40),
+            // Caelum logo
+            Image.asset(
+              'assets/images/wcfs.png',
+              height: 52,
+              fit: BoxFit.contain,
+            ),
+            const SizedBox(height: 36),
+            // Title
+            Text(
+              'TRAD\nREVIEWER',
+              textAlign: TextAlign.center,
+              style: GoogleFonts.nunito(
+                fontSize: 48,
+                fontWeight: FontWeight.w900,
+                color: Colors.white,
+                height: 1.05,
+                letterSpacing: 2,
               ),
-              const SizedBox(height: 24),
-              const Text(
-                'Trad Reviewer',
-                style: TextStyle(
-                  fontSize: 26,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF1B3A6B),
-                ),
-              ),
-              const SizedBox(height: 6),
-              const Text(
-                'Your Offline Exam Reviewer Companion',
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.black54,
-                ),
-              ),
-              const Spacer(),
-              SizedBox(
+            ),
+            const Spacer(),
+            // Book image
+            Image.asset(
+              'assets/images/bbook.png',
+              width: 260,
+              fit: BoxFit.contain,
+            ),
+            const Spacer(),
+            // GET STARTED button
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 32),
+              child: SizedBox(
                 width: double.infinity,
-                height: 54,
+                height: 56,
                 child: ElevatedButton(
                   onPressed: () => Navigator.pushReplacementNamed(context, '/home'),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF2D4A8A),
+                    backgroundColor: Colors.white,
+                    foregroundColor: const Color(0xFF003266),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30),
                     ),
+                    elevation: 0,
                   ),
-                  child: const Text(
-                    'START',
-                    style: TextStyle(
+                  child: Text(
+                    'GET STARTED',
+                    style: GoogleFonts.nunito(
                       fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
+                      fontWeight: FontWeight.w800,
+                      color: const Color(0xFF003266),
                       letterSpacing: 2,
                     ),
                   ),
                 ),
               ),
-              const SizedBox(height: 40),
-            ],
-          ),
+            ),
+            const SizedBox(height: 48),
+          ],
         ),
       ),
     );

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/app_provider.dart';
-import '../widgets/app_theme.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class QuizScreen extends StatelessWidget {
   const QuizScreen({super.key});
@@ -35,151 +35,164 @@ class QuizScreen extends StatelessWidget {
         if (!didPop) _confirmExit(context);
       },
       child: Scaffold(
-        backgroundColor: AppTheme.background,
-        appBar: AppBar(
-          title: Text(isReview
-              ? (provider.isRetryMistakes ? 'Retry Mistakes' : 'Review Mode')
-              : 'Level ${provider.currentLevel}'),
-          actions: [
-            Padding(
-              padding: const EdgeInsets.only(right: 16),
-              child: Center(
-                child: Text(
-                  '${provider.currentQuestionIndex + 1}/${provider.totalQuestions}',
-                  style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
-                ),
-              ),
-            ),
-          ],
-        ),
+        backgroundColor: const Color(0xFF003266),
         body: Column(
           children: [
-            LinearProgressIndicator(
-              value: (provider.currentQuestionIndex + 1) / provider.totalQuestions,
-              backgroundColor: Colors.white,
-              color: AppTheme.accent,
-              minHeight: 5,
-            ),
-            Expanded(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.all(20),
+            // Top navy section
+            SafeArea(
+              bottom: false,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    if (!isReview)
-                      Row(
-                        children: [
-                          const Icon(Icons.star_rounded, color: AppTheme.accent, size: 20),
-                          const SizedBox(width: 4),
-                          Text('Score: ${provider.score}',
-                              style: const TextStyle(fontWeight: FontWeight.w600, color: AppTheme.textDark)),
-                        ],
-                      ),
-                    const SizedBox(height: 16),
-                    Container(
-                      padding: const EdgeInsets.all(20),
-                      decoration: BoxDecoration(
-                        color: AppTheme.surface,
-                        borderRadius: BorderRadius.circular(20),
-                        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.08), blurRadius: 8, offset: const Offset(0, 4))],
-                      ),
-                      child: Text(
-                        q.question,
-                        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: AppTheme.textDark, height: 1.5),
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    ...List.generate(q.choices.length, (i) {
-                      Color bgColor = AppTheme.surface;
-                      Color borderColor = const Color(0xFFE2E8F0);
-                      Color textColor = AppTheme.textDark;
-                      IconData? trailingIcon;
-
-                      if (answered) {
-                        if (i == q.correctIndex) {
-                          bgColor = AppTheme.success.withValues(alpha: 0.12);
-                          borderColor = AppTheme.success;
-                          textColor = AppTheme.success;
-                          trailingIcon = Icons.check_circle_rounded;
-                        } else if (i == selected && i != q.correctIndex) {
-                          bgColor = AppTheme.error.withValues(alpha: 0.10);
-                          borderColor = AppTheme.error;
-                          textColor = AppTheme.error;
-                          trailingIcon = Icons.cancel_rounded;
-                        }
-                      }
-
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 12),
-                        child: GestureDetector(
-                          onTap: answered ? null : () => provider.selectAnswer(i),
-                          child: AnimatedContainer(
-                            duration: const Duration(milliseconds: 250),
-                            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
-                            decoration: BoxDecoration(
-                              color: bgColor,
-                              borderRadius: BorderRadius.circular(14),
-                              border: Border.all(color: borderColor, width: 2),
-                              boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 4)],
-                            ),
-                            child: Row(
-                              children: [
-                                Container(
-                                  width: 30,
-                                  height: 30,
-                                  decoration: BoxDecoration(
-                                    color: borderColor.withValues(alpha: 0.2),
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: Center(
-                                    child: Text(
-                                      String.fromCharCode(65 + i),
-                                      style: TextStyle(fontWeight: FontWeight.bold, color: textColor),
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(width: 12),
-                                Expanded(
-                                  child: Text(q.choices[i],
-                                      style: TextStyle(fontSize: 15, color: textColor, fontWeight: FontWeight.w500)),
-                                ),
-                                if (trailingIcon != null)
-                                  Icon(trailingIcon, color: textColor, size: 22),
-                              ],
+                    // Back + progress
+                    Row(
+                      children: [
+                        GestureDetector(
+                          onTap: () => _confirmExit(context),
+                          child: const Icon(Icons.arrow_back_ios_rounded, color: Colors.white70, size: 20),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(8),
+                            child: LinearProgressIndicator(
+                              value: (provider.currentQuestionIndex + 1) / provider.totalQuestions,
+                              backgroundColor: Colors.white24,
+                              color: const Color(0xFF38BDF8),
+                              minHeight: 6,
                             ),
                           ),
                         ),
-                      );
-                    }),
-                    if (answered) ...[
-                      const SizedBox(height: 8),
-                      ElevatedButton(
-                        onPressed: () async {
-                          if (provider.isLastQuestion) {
-                            await provider.finishLevel();
-                            if (context.mounted) {
-                              if (isReview) {
-                                Navigator.pop(context);
-                              } else {
-                                Navigator.pushReplacementNamed(context, '/result');
-                              }
-                            }
-                          } else {
-                            provider.nextQuestion();
-                          }
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppTheme.primary,
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                        const SizedBox(width: 12),
+                        Text(
+                          '${provider.currentQuestionIndex + 1}/${provider.totalQuestions}',
+                          style: GoogleFonts.nunito(color: Colors.white70, fontSize: 13, fontWeight: FontWeight.w600),
                         ),
-                        child: Text(
-                          provider.isLastQuestion ? 'Finish' : 'Next Question',
-                          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 24),
+                    const SizedBox(height: 8),
+                    Text(
+                      q.question,
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.nunito(
+                        fontSize: 22,
+                        fontWeight: FontWeight.w800,
+                        color: Colors.white,
+                        height: 1.4,
                       ),
-                    ],
+                    ),
+                    const SizedBox(height: 32),
                   ],
+                ),
+              ),
+            ),
+            // White bottom section with choices
+            Expanded(
+              child: Container(
+                decoration: const BoxDecoration(
+                  color: Color(0xFFF5F7FA),
+                ),
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.fromLTRB(20, 28, 20, 20),
+                  child: Column(
+                    children: [
+                      ...List.generate(q.choices.length, (i) {
+                        Color bgColor = Colors.white;
+                        Color borderColor = Colors.transparent;
+                        Color textColor = const Color(0xFF003266);
+                        Widget? trailingIcon;
+
+                        if (answered) {
+                          if (i == q.correctIndex) {
+                            bgColor = const Color(0xFF10B981);
+                            textColor = Colors.white;
+                            trailingIcon = const Icon(Icons.check_circle_rounded, color: Colors.white, size: 22);
+                          } else if (i == selected && i != q.correctIndex) {
+                            bgColor = const Color(0xFFEF4444);
+                            textColor = Colors.white;
+                            trailingIcon = const Icon(Icons.cancel_rounded, color: Colors.white, size: 22);
+                          }
+                        }
+
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 14),
+                          child: GestureDetector(
+                            onTap: answered ? null : () => provider.selectAnswer(i),
+                            child: AnimatedContainer(
+                              duration: const Duration(milliseconds: 250),
+                              width: double.infinity,
+                              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+                              decoration: BoxDecoration(
+                                color: bgColor,
+                                borderRadius: BorderRadius.circular(16),
+                                border: Border.all(color: borderColor),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.06),
+                                    blurRadius: 8,
+                                    offset: const Offset(0, 3),
+                                  ),
+                                ],
+                              ),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      q.choices[i],
+                                      style: GoogleFonts.nunito(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w700,
+                                        color: textColor,
+                                      ),
+                                    ),
+                                  ),
+                                  if (trailingIcon != null) trailingIcon,
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
+                      }),
+                      if (answered) ...[
+                        const SizedBox(height: 8),
+                        SizedBox(
+                          width: double.infinity,
+                          height: 54,
+                          child: ElevatedButton(
+                            onPressed: () async {
+                              if (provider.isLastQuestion) {
+                                await provider.finishLevel();
+                                if (context.mounted) {
+                                  if (isReview) {
+                                    Navigator.pop(context);
+                                  } else {
+                                    Navigator.pushReplacementNamed(context, '/result');
+                                  }
+                                }
+                              } else {
+                                provider.nextQuestion();
+                              }
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFF003266),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                              elevation: 0,
+                            ),
+                            child: Text(
+                              provider.isLastQuestion ? 'Finish' : 'Next Question',
+                              style: GoogleFonts.nunito(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w800,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
                 ),
               ),
             ),

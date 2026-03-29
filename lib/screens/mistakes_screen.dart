@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/app_provider.dart';
-import '../widgets/app_theme.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class MistakesScreen extends StatelessWidget {
   const MistakesScreen({super.key});
@@ -12,13 +12,20 @@ class MistakesScreen extends StatelessWidget {
     final mistakes = provider.mistakes;
 
     return Scaffold(
+      backgroundColor: const Color(0xFFF5F7FA),
       appBar: AppBar(
-        title: const Text('Review Mistakes'),
+        backgroundColor: Colors.white,
+        elevation: 0,
+        leading: GestureDetector(
+          onTap: () => Navigator.pop(context),
+          child: const Icon(Icons.arrow_back_ios_rounded, color: Color(0xFF003266)),
+        ),
+        title: Text('Review Mistakes', style: GoogleFonts.nunito(fontSize: 20, fontWeight: FontWeight.w900, color: const Color(0xFF003266))),
+        centerTitle: true,
         actions: [
           if (mistakes.isNotEmpty)
             IconButton(
-              icon: const Icon(Icons.delete_outline_rounded),
-              tooltip: 'Clear all mistakes',
+              icon: const Icon(Icons.delete_outline_rounded, color: Color(0xFF003266)),
               onPressed: () async {
                 final confirm = await showDialog<bool>(
                   context: context,
@@ -37,13 +44,13 @@ class MistakesScreen extends StatelessWidget {
         ],
       ),
       body: mistakes.isEmpty
-          ? const Center(
+          ? Center(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.check_circle_outline_rounded, size: 72, color: AppTheme.success),
-                  SizedBox(height: 16),
-                  Text('No mistakes yet!', style: TextStyle(fontSize: 18, color: AppTheme.textMuted)),
+                  const Icon(Icons.check_circle_outline_rounded, size: 72, color: Color(0xFF003266)),
+                  const SizedBox(height: 16),
+                  Text('No mistakes yet!', style: GoogleFonts.nunito(fontSize: 18, color: Colors.grey)),
                 ],
               ),
             )
@@ -59,43 +66,29 @@ class MistakesScreen extends StatelessWidget {
                         margin: const EdgeInsets.only(bottom: 14),
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
-                          color: AppTheme.surface,
+                          color: Colors.white,
                           borderRadius: BorderRadius.circular(16),
-                          boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.06), blurRadius: 6, offset: const Offset(0, 3))],
+                          boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 6, offset: const Offset(0, 3))],
                         ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Row(
-                              children: [
-                                Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                                  decoration: BoxDecoration(
-                                    color: AppTheme.primary.withValues(alpha: 0.1),
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  child: Text('Q${m.question.id}',
-                                      style: const TextStyle(color: AppTheme.primary, fontWeight: FontWeight.bold, fontSize: 12)),
-                                ),
-                              ],
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFF003266).withOpacity(0.08),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Text('Q${m.question.id}',
+                                  style: GoogleFonts.nunito(color: const Color(0xFF003266), fontWeight: FontWeight.w800, fontSize: 12)),
                             ),
                             const SizedBox(height: 8),
                             Text(m.question.question,
-                                style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 15, color: AppTheme.textDark)),
+                                style: GoogleFonts.nunito(fontWeight: FontWeight.w700, fontSize: 15, color: const Color(0xFF1E293B))),
                             const SizedBox(height: 12),
-                            _AnswerRow(
-                              label: 'Your answer',
-                              answer: m.selectedAnswer,
-                              color: AppTheme.error,
-                              icon: Icons.cancel_rounded,
-                            ),
+                            _AnswerRow(label: 'Your answer', answer: m.selectedAnswer, color: const Color(0xFFEF4444), icon: Icons.cancel_rounded),
                             const SizedBox(height: 6),
-                            _AnswerRow(
-                              label: 'Correct answer',
-                              answer: m.correctAnswer,
-                              color: AppTheme.success,
-                              icon: Icons.check_circle_rounded,
-                            ),
+                            _AnswerRow(label: 'Correct answer', answer: m.correctAnswer, color: const Color(0xFF10B981), icon: Icons.check_circle_rounded),
                           ],
                         ),
                       );
@@ -104,18 +97,22 @@ class MistakesScreen extends StatelessWidget {
                 ),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(16, 0, 16, 20),
-                  child: ElevatedButton.icon(
-                    icon: const Icon(Icons.replay_rounded),
-                    label: Text('Retry Wrong Questions (${mistakes.length})'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppTheme.error,
-                      minimumSize: const Size(double.infinity, 52),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                  child: SizedBox(
+                    width: double.infinity,
+                    height: 52,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        provider.startRetryMistakes();
+                        Navigator.pushNamed(context, '/quiz');
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF003266),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                        elevation: 0,
+                      ),
+                      child: Text('Retry Wrong Questions (${mistakes.length})',
+                          style: GoogleFonts.nunito(fontSize: 15, fontWeight: FontWeight.w800, color: Colors.white)),
                     ),
-                    onPressed: () {
-                      provider.startRetryMistakes();
-                      Navigator.pushNamed(context, '/quiz');
-                    },
                   ),
                 ),
               ],
@@ -142,9 +139,9 @@ class _AnswerRow extends StatelessWidget {
         Expanded(
           child: RichText(
             text: TextSpan(
-              style: const TextStyle(fontSize: 14, color: AppTheme.textDark),
+              style: GoogleFonts.nunito(fontSize: 14, color: const Color(0xFF1E293B)),
               children: [
-                TextSpan(text: '$label: ', style: TextStyle(color: color, fontWeight: FontWeight.w600)),
+                TextSpan(text: '$label: ', style: TextStyle(color: color, fontWeight: FontWeight.w700)),
                 TextSpan(text: answer),
               ],
             ),
