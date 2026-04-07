@@ -21,7 +21,7 @@ class SplashScreen extends StatelessWidget {
             const SizedBox(height: 36),
             // Title
             Text(
-              'TRAD\nREVIEWER',
+              'CFS\nQUIZ APP',
               textAlign: TextAlign.center,
               style: GoogleFonts.nunito(
                 fontSize: 48,

@@ -44,6 +44,7 @@ class QuizScreen extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
                 child: Column(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     // Back + progress
                     Row(
@@ -71,19 +72,18 @@ class QuizScreen extends StatelessWidget {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 24),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 16),
                     Text(
                       q.question,
                       textAlign: TextAlign.center,
                       style: GoogleFonts.nunito(
-                        fontSize: 22,
-                        fontWeight: FontWeight.w800,
+                        fontSize: q.question.length > 200 ? 13 : q.question.length > 100 ? 16 : 20,
+                        fontWeight: FontWeight.w700,
                         color: Colors.white,
                         height: 1.4,
                       ),
                     ),
-                    const SizedBox(height: 32),
+                    const SizedBox(height: 16),
                   ],
                 ),
               ),

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/app_provider.dart';
-import '../data/questions_data.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class ProgressScreen extends StatelessWidget {
@@ -10,6 +9,7 @@ class ProgressScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<AppProvider>();
+    final totalLvls = provider.totalLevelsForTrack;
     final completedLevels = provider.levelScores.length;
     final accuracy = provider.totalAccuracy;
 
@@ -32,7 +32,7 @@ class ProgressScreen extends StatelessWidget {
                 context: context,
                 builder: (_) => AlertDialog(
                   title: const Text('Reset Progress?'),
-                  content: const Text('All progress, scores, and mistakes will be deleted.'),
+                  content: const Text('This will reset ALL tracks (TRAD, VUL Set A, VUL Set B). All progress, scores, and mistakes will be deleted.'),
                   actions: [
                     TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Cancel')),
                     TextButton(onPressed: () => Navigator.pop(context, true), child: const Text('Reset', style: TextStyle(color: Colors.red))),
@@ -54,8 +54,8 @@ class ProgressScreen extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                _StatCard(label: 'Completed', value: '$completedLevels / $totalLevels'),
-                _StatCard(label: 'Unlocked', value: '${provider.unlockedLevels > totalLevels ? totalLevels : provider.unlockedLevels} / $totalLevels'),
+                _StatCard(label: 'Completed', value: '$completedLevels / $totalLvls'),
+                _StatCard(label: 'Unlocked', value: '${provider.unlockedLevels > totalLvls ? totalLvls : provider.unlockedLevels} / $totalLvls'),
                 _StatCard(label: 'Accuracy', value: '${(accuracy * 100).toStringAsFixed(0)}%'),
               ],
             ),
@@ -98,12 +98,12 @@ class ProgressScreen extends StatelessWidget {
                   Expanded(
                     child: ListView.builder(
                       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                      itemCount: totalLevels,
+                      itemCount: totalLvls,
                       itemBuilder: (context, i) {
                         final level = i + 1;
                         final unlocked = level <= provider.unlockedLevels;
                         final score = provider.levelScores[level];
-                        final total = getQuestionsForLevel(level).length;
+                        final total = provider.getQuestionsForLevelInTrack(level).length;
                         final stars = score != null ? provider.starsForScore(score, total) : 0;
 
                         return Container(

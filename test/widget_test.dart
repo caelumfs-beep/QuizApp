@@ -3,6 +3,6 @@ import 'package:trad_reviewer/main.dart';
 
 void main() {
   testWidgets('App smoke test', (WidgetTester tester) async {
-    await tester.pumpWidget(const TradReviewerApp());
+    await tester.pumpWidget(const CFSQuizApp());
   });
 }

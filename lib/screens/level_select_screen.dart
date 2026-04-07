@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/app_provider.dart';
-import '../data/questions_data.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class LevelSelectScreen extends StatelessWidget {
@@ -10,6 +9,7 @@ class LevelSelectScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<AppProvider>();
+    final totalLvls = provider.totalLevelsForTrack;
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -37,12 +37,13 @@ class LevelSelectScreen extends StatelessWidget {
           mainAxisSpacing: 14,
           childAspectRatio: 0.85,
         ),
-        itemCount: totalLevels,
+        itemCount: totalLvls,
         itemBuilder: (context, i) {
           final level = i + 1;
           final unlocked = level <= provider.unlockedLevels;
           final score = provider.levelScores[level];
-          final stars = score != null ? provider.starsForScore(score, getQuestionsForLevel(level).length) : 0;
+          final levelQCount = provider.getQuestionsForLevelInTrack(level).length;
+          final stars = score != null ? provider.starsForScore(score, levelQCount) : 0;
           return _LevelCard(
             level: level,
             unlocked: unlocked,

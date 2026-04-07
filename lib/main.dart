@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 import 'providers/app_provider.dart';
 import 'screens/splash_screen.dart';
 import 'screens/home_screen.dart';
+import 'screens/track_home_screen.dart';
+import 'screens/vul_set_select_screen.dart';
 import 'screens/level_select_screen.dart';
 import 'screens/quiz_screen.dart';
 import 'screens/result_screen.dart';
@@ -14,24 +16,26 @@ void main() {
   runApp(
     ChangeNotifierProvider(
       create: (_) => AppProvider(),
-      child: const TradReviewerApp(),
+      child: const CFSQuizApp(),
     ),
   );
 }
 
-class TradReviewerApp extends StatelessWidget {
-  const TradReviewerApp({super.key});
+class CFSQuizApp extends StatelessWidget {
+  const CFSQuizApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Trad Reviewer',
+      title: 'CFS Quiz App Reviewer',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.theme,
       initialRoute: '/',
       routes: {
         '/': (_) => const SplashScreen(),
         '/home': (_) => const HomeScreen(),
+        '/vul_sets': (_) => const VulSetSelectScreen(),
+        '/track_home': (_) => const TrackHomeScreen(),
         '/levels': (_) => const LevelSelectScreen(),
         '/quiz': (_) => const QuizScreen(),
         '/result': (_) => const ResultScreen(),

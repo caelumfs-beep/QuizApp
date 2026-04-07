@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/app_provider.dart';
-import '../data/questions_data.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class ResultScreen extends StatelessWidget {
@@ -12,9 +11,10 @@ class ResultScreen extends StatelessWidget {
     final provider = context.watch<AppProvider>();
     final score = provider.score;
     final total = provider.totalQuestions;
-    final passed = score >= passingScore;
+    final passed = score >= provider.passingScoreForTrack;
     final stars = provider.starsForScore(score, total);
     final hasMistakes = provider.sessionMistakes.isNotEmpty;
+    final totalLvls = provider.totalLevelsForTrack;
 
     return Scaffold(
       backgroundColor: const Color(0xFF003266),
@@ -54,7 +54,7 @@ class ResultScreen extends StatelessWidget {
               style: GoogleFonts.nunito(fontSize: 52, fontWeight: FontWeight.w900, color: Colors.white),
             ),
             Text(
-              passed ? 'Great job! Keep going!' : 'You need $passingScore/$total to pass.',
+              passed ? 'Great job! Keep going!' : 'You need ${provider.passingScoreForTrack}/$total to pass.',
               style: GoogleFonts.nunito(color: Colors.white60, fontSize: 14),
             ),
             const SizedBox(height: 32),
@@ -67,7 +67,7 @@ class ResultScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    if (passed && provider.currentLevel < totalLevels) ...[
+                    if (passed && provider.currentLevel < totalLvls) ...[
                       _ResultButton(
                         label: 'Next Level',
                         onTap: () {
